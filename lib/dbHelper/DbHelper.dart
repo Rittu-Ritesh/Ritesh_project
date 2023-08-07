@@ -48,6 +48,7 @@ class DbHelper {
     }
   }
 
+  // Fetch all data from Database
   Future<List<NoteModel>> fetchAllNotes() async {
     var db = await getDb();
 
@@ -62,5 +63,23 @@ class DbHelper {
     print(listNotes);
 
     return listNotes;
+  }
+
+  Future<bool> updateNotes(NoteModel note) async {
+    var db = await getDb();
+
+    var count = await db.update(NOTE_TABLE, note.toMap(),
+        where: "$NOTE_COLUMN_ID= ${note.note_id}");
+
+    return count > 0;
+  }
+
+  Future<bool> deleteNote(int id) async {
+    var db = await getDb();
+
+    var count = await db
+        .delete(NOTE_TABLE, where: "$NOTE_COLUMN_ID= ?", whereArgs: ['$id']);
+
+    return count > 0;
   }
 }
